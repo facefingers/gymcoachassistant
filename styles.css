@@ -18,6 +18,46 @@
     --border: #3d3d3d;
 }
 
+/* Light theme */
+[data-theme="light"] {
+    --primary: #4CAF50;
+    --primary-dark: #388E3C;
+    --secondary: #2196F3;
+    --danger: #f44336;
+    --warning: #ff9800;
+    --success: #4CAF50;
+    --bg-dark: #f5f5f5;
+    --bg-card: #ffffff;
+    --text: #1a1a1a;
+    --text-secondary: #666666;
+    --border: #e0e0e0;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    border-color: var(--primary);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: var(--bg-dark);
@@ -331,6 +371,40 @@ header h1 {
     font-weight: 500;
 }
 
+.exercise-technique {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: rgba(76, 175, 80, 0.1);
+    border-left: 3px solid var(--primary);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.exercise-superset {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 152, 0, 0.15);
+    border-left: 3px solid var(--warning);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--warning);
+    font-weight: 600;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.exercise-warmup {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(33, 150, 243, 0.15);
+    border-left: 3px solid var(--secondary);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--secondary);
+    font-weight: 500;
+}
+
 .optional-badge {
     background: var(--warning);
     color: white;
@@ -386,24 +460,74 @@ header h1 {
     cursor: pointer;
 }
 
-.reps-input {
-    width: 100%;
-    padding: 8px;
+/* Reps counter with +/- buttons */
+.reps-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+    background: var(--bg-dark);
     border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.reps-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
     border-radius: 6px;
-    background: var(--bg-card);
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.reps-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.reps-btn:active {
+    transform: scale(0.95);
+}
+
+.reps-btn.minus {
+    background: var(--danger);
+}
+
+.reps-btn.minus:hover {
+    background: #d32f2f;
+}
+
+.reps-display {
+    font-size: 1.5rem;
+    font-weight: bold;
     color: var(--text);
-    font-size: 0.95rem;
+    min-width: 40px;
     text-align: center;
+    flex: 1;
 }
 
-.reps-input:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-.reps-input::placeholder {
+.reps-label {
     color: var(--text-secondary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.warmup-set {
+    border: 2px solid var(--secondary) !important;
+    background: rgba(33, 150, 243, 0.05) !important;
+}
+
+.warmup-set .reps-counter {
+    border-color: var(--secondary);
 }
 
 /* Exercise Controls */
@@ -759,4 +883,131 @@ header h1 {
 
 .exercise-card {
     animation: fadeIn 0.5s ease;
+}
+
+/* Superset Modal */
+.superset-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.superset-modal.active {
+    display: flex;
+}
+
+.superset-modal-content {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.superset-modal-content h3 {
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.superset-modal-content p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.superset-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.superset-option {
+    background: var(--bg-dark);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.superset-option:hover {
+    transform: translateX(4px);
+    border-color: var(--primary);
+}
+
+.superset-option.good {
+    border-color: var(--success);
+}
+
+.superset-option.good:hover {
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.superset-option.ok {
+    border-color: var(--warning);
+}
+
+.superset-option.ok:hover {
+    background: rgba(255, 152, 0, 0.1);
+}
+
+.superset-option.bad {
+    border-color: var(--danger);
+    opacity: 0.6;
+}
+
+.superset-option.bad:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.superset-option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.superset-option-header strong {
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+.superset-option-header span {
+    font-size: 1.3rem;
+}
+
+.superset-recommendation {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.superset-option.good .superset-recommendation {
+    color: var(--success);
+}
+
+.superset-option.ok .superset-recommendation {
+    color: var(--warning);
+}
+
+.superset-option.bad .superset-recommendation {
+    color: var(--danger);
+}
+
+.superset-btn {
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

@@ -86,7 +86,12 @@ const workouts = {
                 sets: 4,
                 optional: false,
                 type: "legs",
-                weightStep: 5
+                weightStep: 5,
+                warmupSets: 1,
+                warmupWeight: 25,
+                warmupReps: 15,
+                technique: "Стопы немного впереди грифа",
+                focus: "Акцент на ягодицы, колени не выходят за носки"
             },
             {
                 name: "Жим ногами",
@@ -95,7 +100,9 @@ const workouts = {
                 sets: 3,
                 optional: false,
                 type: "legs",
-                weightStep: 10
+                weightStep: 10,
+                footPosition: "Стопы ВЫСОКО и ШИРОКО на платформе",
+                focus: "Акцент на ягодицы и бицепс бедра"
             },
             {
                 name: "Ягодичный мостик",
@@ -104,7 +111,9 @@ const workouts = {
                 sets: 4,
                 optional: false,
                 type: "legs",
-                weightStep: 5
+                weightStep: 5,
+                technique: "Пауза 1 секунду вверху, сжимай ягодицы",
+                focus: "Максимальное сокращение ягодиц в верхней точке"
             },
             {
                 name: "Поднятие на носки в Смите",
@@ -113,7 +122,9 @@ const workouts = {
                 sets: 4,
                 optional: false,
                 type: "isolation",
-                weightStep: 5
+                weightStep: 5,
+                technique: "Полная амплитуда, растяжка внизу",
+                focus: "Икроножные мышцы, медленный темп"
             },
             {
                 name: "Разгибание ног Leg extension",
@@ -297,6 +308,11 @@ const workouts = {
                 optional: false,
                 type: "legs",
                 weightStep: 5,
+                warmupSets: 1,
+                warmupWeight: 40,
+                warmupReps: 15,
+                technique: "Пауза 1-2 секунды вверху, сжимай ягодицы",
+                focus: "Максимальное сокращение ягодиц, медленный темп",
                 note: "Легче чем в тренировке 2, больше повторений"
             },
             {
@@ -307,6 +323,8 @@ const workouts = {
                 optional: false,
                 type: "isolation",
                 weightStep: 5,
+                technique: "МЕДЛЕННО! 2 сек вверх, 2 сек вниз",
+                focus: "Средняя ягодичная мышца (округлость сбоку)",
                 note: "Для ягодиц"
             },
             {
@@ -674,6 +692,7 @@ let workoutStartTime = null;
 let completedSets = {};
 let repsData = {}; // Хранит количество повторений для каждого подхода
 let weightsData = {}; // Хранит актуальные веса упражнений
+let supersets = {}; // Хранит созданные суперсеты: {exerciseIndex: partnerIndex}
 
 // Загрузка сохраненных весов
 function loadWeights() {
@@ -818,6 +837,7 @@ function startWorkout(workoutId) {
     currentWorkout = workoutId;
     completedSets = {};
     repsData = {};
+    supersets = {}; // Сброс суперсетов
     mainTimerSeconds = 0;
     workoutStartTime = new Date();
 
@@ -858,10 +878,15 @@ function restoreWorkoutState() {
 
     Object.keys(repsData).forEach(key => {
         const reps = repsData[key];
-        const inputId = key.replace('-reps', '');
-        const input = document.getElementById(`reps-${inputId}`);
-        if (input) {
-            input.value = reps;
+        // Находим display для повторений
+        const [exerciseIndex, setIndex] = key.replace('-reps', '').split('-');
+        const setItem = document.querySelector(`[data-exercise="${exerciseIndex}"][data-set="${setIndex}"]`);
+        if (setItem) {
+            const repsDisplay = setItem.querySelector('.reps-display');
+            if (repsDisplay) {
+                repsDisplay.textContent = reps;
+                repsDisplay.dataset.reps = reps;
+            }
         }
     });
 
@@ -870,6 +895,101 @@ function restoreWorkoutState() {
     workout.exercises.forEach((_, exerciseIndex) => {
         checkProgressIndicator(exerciseIndex);
     });
+}
+
+// Создание одного подхода
+function createSetItem(exerciseIndex, setIndex, exercise, isWarmup = false) {
+    const setItem = document.createElement('div');
+    setItem.className = 'set-item' + (isWarmup ? ' warmup-set' : '');
+    setItem.dataset.exercise = exerciseIndex;
+    setItem.dataset.set = setIndex;
+
+    const checkboxRow = document.createElement('div');
+    checkboxRow.className = 'set-checkbox-row';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'set-checkbox';
+    checkbox.id = `set-${exerciseIndex}-${setIndex}`;
+
+    const label = document.createElement('label');
+    label.className = 'set-label';
+    label.htmlFor = `set-${exerciseIndex}-${setIndex}`;
+
+    if (isWarmup) {
+        label.innerHTML = `🔥 Разминка <span style="font-size: 0.85em; color: var(--secondary);">${exercise.warmupWeight} кг × ${exercise.warmupReps}</span>`;
+    } else {
+        label.textContent = `Подход ${setIndex + 1}`;
+    }
+
+    checkboxRow.appendChild(checkbox);
+    checkboxRow.appendChild(label);
+
+    // Контейнер для счетчика повторений
+    const repsCounter = document.createElement('div');
+    repsCounter.className = 'reps-counter';
+
+    const minusBtn = document.createElement('button');
+    minusBtn.className = 'reps-btn minus';
+    minusBtn.textContent = '−';
+    minusBtn.type = 'button';
+
+    const repsDisplay = document.createElement('div');
+    repsDisplay.className = 'reps-display';
+    const repsKey = `${exerciseIndex}-${setIndex}-reps`;
+
+    // Значение по умолчанию - середина диапазона или сохраненное
+    const defaultReps = repsData[repsKey] || Math.floor((exercise.targetReps[0] + exercise.targetReps[1]) / 2);
+    repsData[repsKey] = defaultReps;
+    repsDisplay.textContent = defaultReps;
+    repsDisplay.dataset.reps = defaultReps;
+
+    const plusBtn = document.createElement('button');
+    plusBtn.className = 'reps-btn plus';
+    plusBtn.textContent = '+';
+    plusBtn.type = 'button';
+
+    const repsLabel = document.createElement('span');
+    repsLabel.className = 'reps-label';
+    repsLabel.textContent = exercise.isTime ? 'сек' : 'раз';
+
+    repsCounter.appendChild(minusBtn);
+    repsCounter.appendChild(repsDisplay);
+    repsCounter.appendChild(plusBtn);
+    repsCounter.appendChild(repsLabel);
+
+    setItem.appendChild(checkboxRow);
+    setItem.appendChild(repsCounter);
+
+    // Обработчик клика на чекбокс
+    checkbox.addEventListener('change', (e) => {
+        const currentReps = parseInt(repsDisplay.dataset.reps);
+        handleSetComplete(exerciseIndex, setIndex, e.target.checked, currentReps);
+    });
+
+    // Обработчик кнопки минус
+    minusBtn.addEventListener('click', () => {
+        let currentReps = parseInt(repsDisplay.dataset.reps);
+        if (currentReps > 0) {
+            currentReps--;
+            repsDisplay.textContent = currentReps;
+            repsDisplay.dataset.reps = currentReps;
+            repsData[repsKey] = currentReps;
+            checkProgressIndicator(exerciseIndex);
+        }
+    });
+
+    // Обработчик кнопки плюс
+    plusBtn.addEventListener('click', () => {
+        let currentReps = parseInt(repsDisplay.dataset.reps);
+        currentReps++;
+        repsDisplay.textContent = currentReps;
+        repsDisplay.dataset.reps = currentReps;
+        repsData[repsKey] = currentReps;
+        checkProgressIndicator(exerciseIndex);
+    });
+
+    return setItem;
 }
 
 // Рендер упражнений
@@ -906,12 +1026,30 @@ function renderExercises(workout) {
 
         const noteHtml = exercise.note ? `<div class="exercise-note">💡 ${exercise.note}</div>` : '';
 
+        // Техника и акценты
+        const techniqueHtml = exercise.technique ? `<div class="exercise-technique">🎯 <strong>Техника:</strong> ${exercise.technique}</div>` : '';
+        const footPositionHtml = exercise.footPosition ? `<div class="exercise-technique">👣 <strong>Положение стоп:</strong> ${exercise.footPosition}</div>` : '';
+        const focusHtml = exercise.focus ? `<div class="exercise-technique">🔥 <strong>Акцент:</strong> ${exercise.focus}</div>` : '';
+
+        // Суперсет (динамический)
+        let supersetHtml = '';
+        if (supersets[exerciseIndex] !== undefined) {
+            const partnerId = supersets[exerciseIndex];
+            const partnerName = workout.exercises[partnerId].name;
+            supersetHtml = `<div class="exercise-superset">⚡ СУПЕРСЕТ с: ${partnerName}</div>`;
+        }
+
         title.innerHTML = `
             <h3>${exercise.name}</h3>
             <div class="exercise-details">
                 <strong>Вес:</strong> ${weightDisplay} |
                 <strong>Цель:</strong> ${repsDisplay}
+                ${exercise.warmupSets ? ' | <strong style="color: var(--secondary);">🔥 +Разминка</strong>' : ''}
             </div>
+            ${supersetHtml}
+            ${footPositionHtml}
+            ${techniqueHtml}
+            ${focusHtml}
             ${noteHtml}
         `;
 
@@ -935,6 +1073,27 @@ function renderExercises(workout) {
             controls.appendChild(weightBtn);
         }
 
+        // Кнопка суперсета (не для кардио)
+        if (exercise.type !== 'cardio') {
+            const supersetBtn = document.createElement('button');
+            supersetBtn.className = 'btn btn-secondary btn-small superset-btn';
+            supersetBtn.id = `superset-btn-${exerciseIndex}`;
+
+            // Проверяем, есть ли уже суперсет
+            if (supersets[exerciseIndex] !== undefined) {
+                const partnerId = supersets[exerciseIndex];
+                const partnerName = workout.exercises[partnerId].name;
+                supersetBtn.innerHTML = '⚡ ' + partnerName.substring(0, 15) + '...';
+                supersetBtn.onclick = () => breakSuperset(exerciseIndex);
+                supersetBtn.style.background = '#ff9800';
+            } else {
+                supersetBtn.textContent = '➕ Суперсет';
+                supersetBtn.onclick = () => openSupersetModal(exerciseIndex, exercise);
+            }
+
+            controls.appendChild(supersetBtn);
+        }
+
         header.appendChild(controls);
 
         // Индикатор увеличения веса
@@ -946,50 +1105,15 @@ function renderExercises(workout) {
         const setsGrid = document.createElement('div');
         setsGrid.className = 'sets-grid';
 
+        // Добавляем разминочный подход если есть
+        if (exercise.warmupSets) {
+            const warmupItem = createSetItem(exerciseIndex, -1, exercise, true);
+            setsGrid.appendChild(warmupItem);
+        }
+
+        // Обычные подходы
         for (let i = 0; i < exercise.sets; i++) {
-            const setItem = document.createElement('div');
-            setItem.className = 'set-item';
-            setItem.dataset.exercise = exerciseIndex;
-            setItem.dataset.set = i;
-
-            const checkboxRow = document.createElement('div');
-            checkboxRow.className = 'set-checkbox-row';
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'set-checkbox';
-            checkbox.id = `set-${exerciseIndex}-${i}`;
-
-            const label = document.createElement('label');
-            label.className = 'set-label';
-            label.htmlFor = `set-${exerciseIndex}-${i}`;
-            label.textContent = `Подход ${i + 1}`;
-
-            checkboxRow.appendChild(checkbox);
-            checkboxRow.appendChild(label);
-
-            const repsInput = document.createElement('input');
-            repsInput.type = 'number';
-            repsInput.className = 'reps-input';
-            repsInput.placeholder = exercise.isTime ? 'сек' : 'раз';
-            repsInput.min = 0;
-            repsInput.id = `reps-${exerciseIndex}-${i}`;
-
-            setItem.appendChild(checkboxRow);
-            setItem.appendChild(repsInput);
-
-            // Обработчик клика на чекбокс
-            checkbox.addEventListener('change', (e) => {
-                handleSetComplete(exerciseIndex, i, e.target.checked, repsInput.value);
-            });
-
-            // Обработчик изменения повторений
-            repsInput.addEventListener('change', (e) => {
-                const repsKey = `${exerciseIndex}-${i}-reps`;
-                repsData[repsKey] = e.target.value;
-                checkProgressIndicator(exerciseIndex);
-            });
-
+            const setItem = createSetItem(exerciseIndex, i, exercise, false);
             setsGrid.appendChild(setItem);
         }
 
@@ -1014,8 +1138,9 @@ function handleSetComplete(exerciseIndex, setIndex, isCompleted, reps) {
     const setItem = document.querySelector(`[data-exercise="${exerciseIndex}"][data-set="${setIndex}"]`);
     if (isCompleted) {
         setItem.classList.add('completed');
-        // Запускаем таймер отдыха
-        startRestTimer();
+        // Запускаем таймер отдыха (учитываем суперсет)
+        const isInSuperset = supersets[exerciseIndex] !== undefined;
+        startRestTimer(isInSuperset);
         // Проверяем прогресс
         checkProgressIndicator(exerciseIndex);
     } else {
@@ -1157,10 +1282,19 @@ function completeCardio() {
 }
 
 // Таймер отдыха
-function startRestTimer() {
-    restSeconds = 60;
+function startRestTimer(isInSuperset = false) {
+    // Для суперсетов - короткий отдых (20 сек), обычно - 60 сек
+    restSeconds = isInSuperset ? 20 : 60;
     updateRestTimer();
-    document.getElementById('restTimer').classList.add('active');
+
+    const restTimerEl = document.getElementById('restTimer');
+    restTimerEl.classList.add('active');
+
+    // Показываем что это суперсет
+    const restContent = restTimerEl.querySelector('.rest-content h3');
+    if (restContent) {
+        restContent.textContent = isInSuperset ? '⚡ СУПЕРСЕТ - Быстро!' : '⏱️ Отдых';
+    }
 
     if (restTimerInterval) clearInterval(restTimerInterval);
 
@@ -1170,7 +1304,7 @@ function startRestTimer() {
             updateRestTimer();
         } else {
             stopRestTimer();
-            // Звуковое уведомление (можно добавить)
+            // Звуковое уведомление
             playBeep();
         }
     }, 1000);
@@ -1437,4 +1571,186 @@ function formatTime(seconds) {
         return `${hours}ч ${minutes}м`;
     }
     return `${minutes}м ${secs}с`;
+}
+
+// Супер сеты
+function openSupersetModal(exerciseIndex, exercise) {
+    const workout = workouts[currentWorkout];
+
+    // Создаем список доступных упражнений
+    let options = '<div class="superset-modal-content">';
+    options += '<h3>Создать суперсет</h3>';
+    options += '<p>Выбери упражнение для суперсета с: <strong>' + exercise.name + '</strong></p>';
+    options += '<div class="superset-options">';
+
+    workout.exercises.forEach((ex, idx) => {
+        if (idx === exerciseIndex || ex.type === 'cardio') return; // Пропускаем себя и кардио
+
+        // Получаем рекомендацию
+        const recommendation = getSupersetRecommendation(exercise, ex);
+
+        options += `
+            <div class="superset-option ${recommendation.class}" onclick="createSuperset(${exerciseIndex}, ${idx})">
+                <div class="superset-option-header">
+                    <strong>${ex.name}</strong>
+                    <span class="${recommendation.class}">${recommendation.icon}</span>
+                </div>
+                <div class="superset-recommendation">${recommendation.text}</div>
+            </div>
+        `;
+    });
+
+    options += '</div>';
+    options += '<button class="btn btn-secondary" onclick="closeSupersetModal()">Отмена</button>';
+    options += '</div>';
+
+    // Показываем модальное окно
+    const modal = document.createElement('div');
+    modal.className = 'superset-modal active';
+    modal.id = 'supersetModal';
+    modal.innerHTML = options;
+    document.body.appendChild(modal);
+}
+
+function closeSupersetModal() {
+    const modal = document.getElementById('supersetModal');
+    if (modal) modal.remove();
+}
+
+function createSuperset(exerciseIndex1, exerciseIndex2) {
+    // Создаем двусторонний суперсет
+    supersets[exerciseIndex1] = exerciseIndex2;
+    supersets[exerciseIndex2] = exerciseIndex1;
+
+    closeSupersetModal();
+
+    // Перерисовываем упражнения
+    const workout = workouts[currentWorkout];
+    renderExercises(workout);
+    restoreWorkoutState();
+}
+
+function breakSuperset(exerciseIndex) {
+    if (confirm('Разорвать суперсет?')) {
+        const partnerId = supersets[exerciseIndex];
+
+        // Удаляем с обеих сторон
+        delete supersets[exerciseIndex];
+        delete supersets[partnerId];
+
+        // Перерисовываем
+        const workout = workouts[currentWorkout];
+        renderExercises(workout);
+        restoreWorkoutState();
+    }
+}
+
+function getSupersetRecommendation(exercise1, exercise2) {
+    const type1 = exercise1.type;
+    const type2 = exercise2.type;
+
+    // Определяем группы мышц
+    const group1 = getExerciseMuscleGroup(exercise1);
+    const group2 = getExerciseMuscleGroup(exercise2);
+
+    // Оба базовых/тяжелых
+    if ((type1 === 'legs' || type1 === 'compound') && (type2 === 'legs' || type2 === 'compound') && group1 === group2) {
+        return {
+            class: 'bad',
+            icon: '❌',
+            text: 'Не рекомендую: оба упражнения тяжелые для одной группы'
+        };
+    }
+
+    // Разные группы мышц
+    if (group1 !== group2) {
+        return {
+            class: 'good',
+            icon: '✅',
+            text: 'Отлично! Разные группы мышц - успеешь восстановиться'
+        };
+    }
+
+    // Одна группа, но одно изоляция
+    if (type1 === 'isolation' || type2 === 'isolation') {
+        return {
+            class: 'ok',
+            icon: '⚠️',
+            text: 'Можно: одна группа мышц, но не очень тяжело'
+        };
+    }
+
+    // По умолчанию
+    return {
+        class: 'ok',
+        icon: '⚠️',
+        text: 'Осторожно: может быть тяжеловато'
+    };
+}
+
+function getExerciseMuscleGroup(exercise) {
+    const name = exercise.name.toLowerCase();
+
+    if (name.includes('приседан') || name.includes('жим ногами') || name.includes('ягодиц') ||
+        name.includes('выпад') || name.includes('ног') || name.includes('икр') || name.includes('носки')) {
+        return 'legs';
+    }
+
+    if (name.includes('грудь') || name.includes('жим') && !name.includes('ногами') && !name.includes('плеч')) {
+        return 'chest';
+    }
+
+    if (name.includes('спина') || name.includes('тяга') || name.includes('подтягива')) {
+        return 'back';
+    }
+
+    if (name.includes('плеч') || name.includes('дельт')) {
+        return 'shoulders';
+    }
+
+    if (name.includes('бицепс') || name.includes('сгибан') && name.includes('рук')) {
+        return 'biceps';
+    }
+
+    if (name.includes('трицепс') || name.includes('разгибан') && name.includes('рук')) {
+        return 'triceps';
+    }
+
+    if (name.includes('пресс') || name.includes('скручива') || name.includes('кор')) {
+        return 'abs';
+    }
+
+    return 'other';
+}
+
+// Theme toggle
+function initTheme() {
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+
+    document.body.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+}
+
+function updateThemeIcon(theme) {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+}
+
+// Initialize theme on load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTheme);
+} else {
+    initTheme();
 }
