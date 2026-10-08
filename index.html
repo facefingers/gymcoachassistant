@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Тренировочный Трекер</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💪 Тренировочный Трекер</h1>
+            <div class="header-buttons">
+                <a href="progression.html" class="btn btn-primary" style="text-decoration: none;">📈 Как увеличивать вес?</a>
+                <a href="toning.html" class="btn btn-secondary" style="text-decoration: none; background: #FF6B9D;">🔥 Тонус и жиросжигание</a>
+                <a href="popular.html" class="btn btn-secondary" style="text-decoration: none; background: #9C27B0;">🎬 Популярные (YouTube/Insta)</a>
+                <button id="historyBtn" class="btn btn-secondary">📊 История</button>
+                <button id="adviceBtn" class="btn btn-secondary">💡 Советы</button>
+                <button id="statsBtn" class="btn btn-secondary">📈 Статистика</button>
+            </div>
+        </header>
+
+        <!-- Главный экран выбора тренировки -->
+        <div id="mainScreen" class="screen active">
+            <div class="workout-cards">
+                <div class="workout-card" data-workout="1">
+                    <div class="workout-header">
+                        <h2>Тренировка 1</h2>
+                        <span class="workout-badge">~60-90 мин</span>
+                    </div>
+                    <h3>Спина и Грудь</h3>
+                    <p>Акцент на верх тела</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 7 упражнений</span>
+                        <span>23 подхода</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="1">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="2">
+                    <div class="workout-header">
+                        <h2>Тренировка 2</h2>
+                        <span class="workout-badge">~55-65 мин</span>
+                    </div>
+                    <h3>Тяжелые Ноги</h3>
+                    <p>Акцент на низ</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 6 упражнений</span>
+                        <span>21 подход</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="2">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="3">
+                    <div class="workout-header">
+                        <h2>Тренировка 3</h2>
+                        <span class="workout-badge">~90-120 мин</span>
+                    </div>
+                    <h3>Плечи, Грудь и Ягодицы</h3>
+                    <p>Доработка (длинная тренировка)</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 7 упражнений</span>
+                        <span>22 подхода</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="3">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="4" style="border-color: #FF6B9D;">
+                    <div class="workout-header">
+                        <h2>Тренировка 4 🔥</h2>
+                        <span class="workout-badge" style="background: #FF6B9D;">~50-60 мин</span>
+                    </div>
+                    <h3>Верх + Жиросжигание</h3>
+                    <p>Подтянутые руки и плечи</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 7 упражнений</span>
+                        <span>20 подходов + интервалы</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="4" style="background: #FF6B9D;">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="5" style="border-color: #FF6B9D;">
+                    <div class="workout-header">
+                        <h2>Тренировка 5 🍑</h2>
+                        <span class="workout-badge" style="background: #FF6B9D;">~55-65 мин</span>
+                    </div>
+                    <h3>Ноги и Ягодицы (Тонус)</h3>
+                    <p>Подтянутые ноги без перекачки</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 7 упражнений</span>
+                        <span>20 подходов + интервалы</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="5" style="background: #FF6B9D;">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="6" style="border-color: #FF6B9D;">
+                    <div class="workout-header">
+                        <h2>Тренировка 6 ⚡</h2>
+                        <span class="workout-badge" style="background: #FF6B9D;">~45-55 мин</span>
+                    </div>
+                    <h3>Круговая (Все тело)</h3>
+                    <p>Жиросжигание + общий тонус</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 5 упражнений × 3 круга</span>
+                        <span>15 подходов + 10 мин кардио</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="6" style="background: #FF6B9D;">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="7" style="border-color: #9C27B0;">
+                    <div class="workout-header">
+                        <h2>Тренировка 7 🎬</h2>
+                        <span class="workout-badge" style="background: #9C27B0;">~60-70 мин</span>
+                    </div>
+                    <h3>Upper/Lower - Верх</h3>
+                    <p>Популярная схема сплита (YouTube/Insta)</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 7 упражнений</span>
+                        <span>23 подхода</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="7" style="background: #9C27B0;">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="8" style="border-color: #9C27B0;">
+                    <div class="workout-header">
+                        <h2>Тренировка 8 🎬</h2>
+                        <span class="workout-badge" style="background: #9C27B0;">~60-70 мин</span>
+                    </div>
+                    <h3>Upper/Lower - Низ</h3>
+                    <p>Популярная схема сплита (YouTube/Insta)</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 7 упражнений</span>
+                        <span>24 подхода</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="8" style="background: #9C27B0;">Начать</button>
+                </div>
+
+                <div class="workout-card" data-workout="9" style="border-color: #9C27B0;">
+                    <div class="workout-header">
+                        <h2>Тренировка 9 🍑</h2>
+                        <span class="workout-badge" style="background: #9C27B0;">~55-65 мин</span>
+                    </div>
+                    <h3>Booty Builder</h3>
+                    <p>Популярная инста-программа на ягодицы</p>
+                    <div class="workout-info">
+                        <span>8 мин кардио + 7 упражнений</span>
+                        <span>21 подход + 10 мин ходьба</span>
+                    </div>
+                    <button class="btn btn-primary start-btn" data-workout="9" style="background: #9C27B0;">Начать</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; padding: 20px; background: var(--bg-card); border-radius: 12px; border: 2px dashed var(--primary);">
+                <h3 style="color: var(--primary); margin-bottom: 10px;">💡 Три программы на выбор</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8;">
+                    <strong style="color: var(--primary);">Тренировки 1-3:</strong> Классические (набор массы, сила)<br>
+                    <strong style="color: #FF6B9D;">Тренировки 4-6:</strong> Тонус и жиросжигание (подтянутое тело, меньше живот)<br>
+                    <strong style="color: #9C27B0;">Тренировки 7-9:</strong> Популярные из YouTube/Instagram (Upper/Lower + Booty)
+                </p>
+            </div>
+        </div>
+
+        <!-- Экран тренировки -->
+        <div id="workoutScreen" class="screen">
+            <div class="workout-controls">
+                <button id="backBtn" class="btn btn-secondary">← Назад</button>
+                <div class="timer-display">
+                    <div class="main-timer">
+                        <span class="timer-label">Общее время:</span>
+                        <span id="mainTimer">00:00:00</span>
+                    </div>
+                </div>
+                <button id="finishBtn" class="btn btn-success">✓ Завершить</button>
+            </div>
+
+            <!-- Кардио таймер -->
+            <div id="cardioSection" class="cardio-section">
+                <h2>🏃 Разминка - Кардио (8 минут)</h2>
+                <p style="margin-bottom: 20px; opacity: 0.9; font-size: 1.1rem;">
+                    Выбери: Эллипсоид / Степпер (Stairmaster) / Велосипед
+                </p>
+                <div class="cardio-timer">
+                    <div class="timer-circle">
+                        <span id="cardioTimer">08:00</span>
+                    </div>
+                    <div class="cardio-buttons">
+                        <button id="cardioStartBtn" class="btn btn-primary">Начать</button>
+                        <button id="cardioResetBtn" class="btn btn-secondary">Сбросить</button>
+                        <button id="cardioSkipBtn" class="btn btn-secondary">Пропустить</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Список упражнений -->
+            <div id="exercisesList" class="exercises-list"></div>
+
+            <!-- Таймер отдыха -->
+            <div id="restTimer" class="rest-timer">
+                <div class="rest-content">
+                    <h3>⏱️ Отдых</h3>
+                    <div class="rest-time" id="restTime">00:60</div>
+                    <div class="rest-buttons">
+                        <button id="restAddBtn" class="btn btn-secondary">+15 сек</button>
+                        <button id="restStopBtn" class="btn btn-primary">Готов!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран истории -->
+        <div id="historyScreen" class="screen">
+            <div class="screen-header">
+                <button class="btn btn-secondary back-to-main">← Назад</button>
+                <h2>📊 История тренировок</h2>
+                <button id="clearHistoryBtn" class="btn btn-danger">Очистить</button>
+            </div>
+            <div id="historyList" class="history-list"></div>
+        </div>
+
+        <!-- Экран советов -->
+        <div id="adviceScreen" class="screen">
+            <div class="screen-header">
+                <button class="btn btn-secondary back-to-main">← Назад</button>
+                <h2>💡 Советы и рекомендации</h2>
+            </div>
+            <div class="advice-content">
+                <div class="advice-section">
+                    <h3>🎯 Почему нет визуальных результатов?</h3>
+                    <div class="advice-card">
+                        <h4>1. Питание - это 70% успеха</h4>
+                        <ul>
+                            <li><strong>Белок:</strong> 1.6-2.2 г на кг веса тела в день</li>
+                            <li><strong>Калории:</strong> профицит +200-300 ккал для набора массы</li>
+                            <li><strong>Отслеживание:</strong> веди дневник питания хотя бы неделю</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>2. Прогрессия нагрузок ⚡ КЛЮЧ К РЕЗУЛЬТАТАМ!</h4>
+                        <ul>
+                            <li><strong>Когда увеличивать вес:</strong> если делаешь все подходы с верхним пределом повторений легко</li>
+                            <li><strong>Пример:</strong> делаешь 4 подхода по 10 раз, последний подход легко → увеличь вес</li>
+                            <li><strong>Приложение подскажет:</strong> индикатор "Пора увеличить вес" появится автоматически!</li>
+                            <li><strong>Изоляция (бицепс, дельты):</strong> +2.5 кг</li>
+                            <li><strong>Компаунды верх (жимы, тяги):</strong> +2.5-5 кг</li>
+                            <li><strong>Ноги (приседания, жим ногами):</strong> +5-10 кг</li>
+                            <li><strong>НЕ жертвуй техникой ради веса!</strong> Лучше меньше вес с правильной техникой</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card warning">
+                        <h4>📊 Как использовать трекер весов в приложении:</h4>
+                        <ul>
+                            <li><strong>1.</strong> Во время тренировки вводи фактическое количество повторений в каждом подходе</li>
+                            <li><strong>2.</strong> Когда сделаешь все подходы с максимальным количеством повторений, увидишь: <br><em>"🎉 Отлично! Пора увеличить вес на +X кг"</em></li>
+                            <li><strong>3.</strong> Нажми кнопку "⚙️ Вес" рядом с упражнением и введи новый вес</li>
+                            <li><strong>4.</strong> Все веса сохраняются автоматически - не потеряешь прогресс!</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>3. Разминка и заминка ВАЖНЫ!</h4>
+                        <ul>
+                            <li><strong>Разминка:</strong> 8 мин кардио ✅ (уже включено в каждую тренировку)</li>
+                            <li><strong>Дополнительно:</strong> можешь добавить 2-3 мин динамической растяжки</li>
+                            <li><strong>Заминка:</strong> 5-10 мин растяжки работающих мышц</li>
+                            <li>Это предотвращает травмы и улучшает восстановление</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>4. Восстановление</h4>
+                        <ul>
+                            <li><strong>Сон:</strong> 7-9 часов каждую ночь</li>
+                            <li><strong>Отдых:</strong> минимум 48 часов между тренировками одной группы мышц</li>
+                            <li><strong>Вода:</strong> 2-3 литра в день</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>5. Техника выполнения</h4>
+                        <ul>
+                            <li>Медленная негативная фаза (опускание веса)</li>
+                            <li>Полная амплитуда движения</li>
+                            <li>Контроль веса, не рывки</li>
+                            <li>Связь мозг-мышца (чувствуй работающую мышцу)</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>6. Опциональные упражнения</h4>
+                        <ul>
+                            <li><strong>Кор:</strong> планки и пресс нужны для стабилизации</li>
+                            <li>Делай их хотя бы 2 раза в неделю</li>
+                            <li>Сильный кор = больше силы в базовых упражнениях</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="advice-section">
+                    <h3>📝 Рекомендации по твоей программе</h3>
+                    <div class="advice-card warning">
+                        <h4>⚠️ Что стоит изменить:</h4>
+                        <ul>
+                            <li><strong>✅ Кардио разминка:</strong> уже включено в каждую тренировку (8 мин)</li>
+                            <li><strong>Добавь заминку:</strong> 5-10 мин растяжки в конце тренировки</li>
+                            <li><strong>Делай опциональные упражнения:</strong> особенно кор</li>
+                            <li><strong>Отслеживай прогресс:</strong> записывай веса и повторения</li>
+                            <li><strong>Фотографируй себя:</strong> каждые 2 недели в одном ракурсе</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="advice-section">
+                    <h3>🔥 Новые тренировки 4-6: Тонус и жиросжигание</h3>
+
+                    <div class="advice-card" style="border-color: #FF6B9D; background: rgba(255, 107, 157, 0.05);">
+                        <h4 style="color: #FF6B9D;">Для кого эти тренировки?</h4>
+                        <ul>
+                            <li>✅ Хочешь подтянутое тело (не массивное)</li>
+                            <li>✅ Нужно убрать живот</li>
+                            <li>✅ Хочешь красивые руки и ноги</li>
+                            <li>✅ Любишь тренажеры, не любишь работать на коврике</li>
+                            <li>✅ Предпочитаешь короткие тренировки (45-60 мин)</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>Тренировка 4: Верх + Жиросжигание</h4>
+                        <ul>
+                            <li><strong>Акцент:</strong> Подтянутые руки (особенно трицепс - задняя часть рук)</li>
+                            <li><strong>Особенности:</strong> 4 подхода на трицепс по 15 повторений</li>
+                            <li><strong>Кардио:</strong> 5 мин интервалы (30 сек быстро / 30 сек медленно)</li>
+                            <li><strong>Упражнения на пресс:</strong> скручивания на блоке</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>Тренировка 5: Ноги и Ягодицы (Тонус)</h4>
+                        <ul>
+                            <li><strong>Акцент:</strong> Подтянутые ноги и ягодицы БЕЗ перекачки</li>
+                            <li><strong>Особенности:</strong> Легкие веса, 15-20 повторений</li>
+                            <li><strong>Изоляция:</strong> Отведение/сведение ног для формы</li>
+                            <li><strong>Кардио:</strong> 5 мин степпер интервалы</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>Тренировка 6: Круговая (Всё тело)</h4>
+                        <ul>
+                            <li><strong>Формат:</strong> 3 круга без отдыха между упражнениями!</li>
+                            <li><strong>Эффект:</strong> Максимальное жиросжигание</li>
+                            <li><strong>Время:</strong> Самая быстрая - 45-55 минут</li>
+                            <li><strong>Кардио:</strong> 10 минут в конце</li>
+                            <li><strong>Важно:</strong> Не гонись за весами, важнее темп!</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card warning">
+                        <h4>⚠️ ВАЖНО: Про живот</h4>
+                        <ul>
+                            <li><strong>Локального жиросжигания НЕ существует!</strong></li>
+                            <li>Упражнения на пресс НЕ убирают живот</li>
+                            <li>Убрать живот = дефицит калорий + кардио + время</li>
+                            <li>Упражнения на пресс = укрепление кора (осанка, сила)</li>
+                            <li><strong>Формула:</strong> Питание (70%) + Кардио (20%) + Силовые (10%)</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card" style="border-color: #FF6B9D;">
+                        <h4 style="color: #FF6B9D;">Питание для тренировок 4-6:</h4>
+                        <ul>
+                            <li><strong>Белок:</strong> 1.8-2.2 г на кг веса (для сохранения мышц)</li>
+                            <li><strong>Калории:</strong> дефицит -300-500 ккал</li>
+                            <li><strong>Не спеши:</strong> -0.5 кг в неделю = идеально</li>
+                            <li><strong>Результат:</strong> Через 8-12 недель увидишь изменения</li>
+                        </ul>
+                    </div>
+
+                    <div class="advice-card">
+                        <h4>Можно ли совмещать программы?</h4>
+                        <p style="margin-bottom: 10px;">✅ Да! Примеры:</p>
+                        <ul>
+                            <li><strong>Вариант 1:</strong> Пн - Тренировка 1, Ср - Тренировка 5, Пт - Тренировка 6</li>
+                            <li><strong>Вариант 2:</strong> Чередуй недели (неделя 1-3, неделя 4-6)</li>
+                            <li><strong>Вариант 3:</strong> Верх из 1-3, низ из 4-6</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="advice-section">
+                    <h3>🔢 Калькулятор калорий</h3>
+                    <div class="calculator">
+                        <div class="calc-inputs">
+                            <label>
+                                Вес (кг):
+                                <input type="number" id="weightInput" placeholder="70">
+                            </label>
+                            <label>
+                                Рост (см):
+                                <input type="number" id="heightInput" placeholder="175">
+                            </label>
+                            <label>
+                                Возраст:
+                                <input type="number" id="ageInput" placeholder="25">
+                            </label>
+                            <label>
+                                Пол:
+                                <select id="genderInput">
+                                    <option value="male">Мужчина</option>
+                                    <option value="female">Женщина</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button id="calculateBtn" class="btn btn-primary">Рассчитать</button>
+                        <div id="calcResult" class="calc-result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран статистики -->
+        <div id="statsScreen" class="screen">
+            <div class="screen-header">
+                <button class="btn btn-secondary back-to-main">← Назад</button>
+                <h2>📈 Статистика</h2>
+            </div>
+            <div id="statsContent" class="stats-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
