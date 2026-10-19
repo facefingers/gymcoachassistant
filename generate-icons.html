@@ -2,98 +2,132 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Генератор иконок</title>
+    <title>Генератор минималистичных иконок</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             padding: 40px;
-            background: #1a1a1a;
+            background: #000;
             color: white;
             text-align: center;
         }
+        h1 {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 50px;
+        }
         .icon-preview {
-            margin: 20px auto;
-            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-            border-radius: 20%;
+            margin: 30px auto;
+            background: #1a1a1a;
+            border-radius: 25%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
         }
         .icon-192 {
             width: 192px;
             height: 192px;
-            font-size: 120px;
         }
         .icon-512 {
             width: 512px;
             height: 512px;
-            font-size: 320px;
         }
         button {
-            background: #4CAF50;
+            background: #ff6600;
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
             margin: 10px;
+            transition: all 0.3s;
         }
         button:hover {
-            background: #45a049;
+            background: #ff7700;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 102, 0, 0.4);
         }
         .instructions {
             max-width: 600px;
-            margin: 40px auto;
+            margin: 60px auto;
             text-align: left;
             line-height: 1.8;
+            color: #ccc;
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        .instructions h3 {
+            color: #ff6600;
+            margin-top: 0;
+        }
+        code {
+            background: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #ff6600;
         }
         canvas {
-            display: none;
+            display: block;
+            margin: 0 auto;
+        }
+        .section {
+            margin: 60px 0;
         }
     </style>
 </head>
 <body>
-    <h1>💪 Генератор иконок для приложения</h1>
+    <h1>💪 Минималистичные иконки</h1>
+    <p class="subtitle">Черно-белый дизайн с оранжевым акцентом</p>
 
-    <h2>Иконка 192x192</h2>
-    <div class="icon-preview icon-192" id="icon192">💪</div>
-    <button onclick="downloadIcon(192)">Скачать icon-192.png</button>
+    <div class="section">
+        <h2>Иконка 192×192</h2>
+        <canvas id="canvas192" class="icon-preview icon-192" width="192" height="192"></canvas>
+        <br><br>
+        <button onclick="downloadIcon(192)">⬇ Скачать icon-192.png</button>
+    </div>
 
-    <br><br>
-
-    <h2>Иконка 512x512</h2>
-    <div class="icon-preview icon-512" id="icon512">💪</div>
-    <button onclick="downloadIcon(512)">Скачать icon-512.png</button>
+    <div class="section">
+        <h2>Иконка 512×512</h2>
+        <canvas id="canvas512" class="icon-preview icon-512" width="512" height="512"></canvas>
+        <br><br>
+        <button onclick="downloadIcon(512)">⬇ Скачать icon-512.png</button>
+    </div>
 
     <div class="instructions">
-        <h3>Инструкция:</h3>
+        <h3>📋 Инструкция:</h3>
         <ol>
-            <li>Нажми кнопки выше чтобы скачать иконки</li>
-            <li>Положи файлы <code>icon-192.png</code> и <code>icon-512.png</code> в папку <code>Sport</code></li>
-            <li>Готово! Можно загружать на GitHub</li>
+            <li>Нажми обе кнопки выше чтобы скачать иконки</li>
+            <li>Положи <code>icon-192.png</code> и <code>icon-512.png</code> в папку <code>Github</code></li>
+            <li>Загрузи их на GitHub (Add file → Upload files)</li>
+            <li>Готово! ✨</li>
         </ol>
     </div>
 
-    <canvas id="canvas"></canvas>
-
     <script>
-        function downloadIcon(size) {
-            const canvas = document.getElementById('canvas');
+        // Рисуем иконки при загрузке
+        window.onload = function() {
+            drawIcon(192);
+            drawIcon(512);
+        };
+
+        function drawIcon(size) {
+            const canvas = document.getElementById('canvas' + size);
             const ctx = canvas.getContext('2d');
-            canvas.width = size;
-            canvas.height = size;
 
-            // Рисуем градиентный фон
-            const gradient = ctx.createLinearGradient(0, 0, size, size);
-            gradient.addColorStop(0, '#4CAF50');
-            gradient.addColorStop(1, '#2E7D32');
-
-            ctx.fillStyle = gradient;
+            // Фон - чёрный
+            ctx.fillStyle = '#1a1a1a';
 
             // Закругленные углы
-            const radius = size * 0.2;
+            const radius = size * 0.25;
             ctx.beginPath();
             ctx.moveTo(radius, 0);
             ctx.lineTo(size - radius, 0);
@@ -107,13 +141,73 @@
             ctx.closePath();
             ctx.fill();
 
-            // Рисуем эмодзи
-            ctx.font = `${size * 0.6}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('💪', size / 2, size / 2);
+            // Тонкая граница
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = size * 0.005;
+            ctx.stroke();
 
-            // Скачиваем
+            // Рисуем минималистичную гантель
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const barWidth = size * 0.5;
+            const barHeight = size * 0.04;
+            const plateWidth = size * 0.08;
+            const plateHeight = size * 0.25;
+
+            ctx.fillStyle = '#ff6600'; // Оранжевый
+
+            // Гриф (центр)
+            ctx.fillRect(
+                centerX - barWidth / 2,
+                centerY - barHeight / 2,
+                barWidth,
+                barHeight
+            );
+
+            // Левый блин
+            ctx.fillRect(
+                centerX - barWidth / 2 - plateWidth,
+                centerY - plateHeight / 2,
+                plateWidth,
+                plateHeight
+            );
+
+            // Правый блин
+            ctx.fillRect(
+                centerX + barWidth / 2,
+                centerY - plateHeight / 2,
+                plateWidth,
+                plateHeight
+            );
+
+            // Дополнительные блины (меньше)
+            const smallPlateWidth = size * 0.06;
+            const smallPlateHeight = size * 0.2;
+
+            ctx.globalAlpha = 0.7;
+
+            // Левый маленький
+            ctx.fillRect(
+                centerX - barWidth / 2 - plateWidth - smallPlateWidth,
+                centerY - smallPlateHeight / 2,
+                smallPlateWidth,
+                smallPlateHeight
+            );
+
+            // Правый маленький
+            ctx.fillRect(
+                centerX + barWidth / 2 + plateWidth,
+                centerY - smallPlateHeight / 2,
+                smallPlateWidth,
+                smallPlateHeight
+            );
+
+            ctx.globalAlpha = 1.0;
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById('canvas' + size);
+
             canvas.toBlob(blob => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');

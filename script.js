@@ -1708,21 +1708,17 @@ function renderExercises(workout) {
     const scoreText = getScoreText(score);
     const scoreStars = getScoreStars(score);
 
-    // Добавляем индикатор оценки
-    const scoreIndicator = document.createElement('div');
-    scoreIndicator.className = 'order-score-indicator';
-    scoreIndicator.innerHTML = `
-        <div class="score-content">
-            <div class="score-label">${t('orderScore')}</div>
-            <div class="score-value">
-                <span class="score-stars">${scoreStars}</span>
-                <span class="score-text">${scoreText} (${score}/100)</span>
+    // Добавляем индикатор оценки (только если порядок не идеален)
+    if (score < 100) {
+        const scoreIndicator = document.createElement('div');
+        scoreIndicator.className = 'order-score-indicator';
+        scoreIndicator.innerHTML = `
+            <div class="score-content">
+                <span class="score-text">💡 ${t('dragHint')}</span>
             </div>
-            ${score < 75 ? `<div class="score-warning">${t('orderWarning')}</div>` : ''}
-        </div>
-        <div class="drag-hint">💡 ${t('dragHint')}</div>
-    `;
-    container.appendChild(scoreIndicator);
+        `;
+        container.appendChild(scoreIndicator);
+    }
 
     // Рендерим упражнения в заданном порядке
     order.forEach((exerciseIndex, orderIndex) => {
@@ -2161,13 +2157,70 @@ function finishWorkout() {
         }
     }
 
+    // Подсчитываем общий вес
+    const workout = workouts[currentWorkout];
+    let totalWeight = 0;
+
+    workout.exercises.forEach((exercise, exerciseIndex) => {
+        if (exercise.type === 'cardio') return;
+
+        const weights = getExerciseWeight(currentWorkout, exerciseIndex);
+
+        for (let i = 0; i < exercise.sets; i++) {
+            const key = `${exerciseIndex}-${i}`;
+            if (completedSets[key]) {
+                const repsKey = `${exerciseIndex}-${i}-reps`;
+                const reps = repsData[repsKey] || exercise.targetReps[0];
+
+                if (exercise.isDual) {
+                    totalWeight += Math.abs(weights.weight) * reps;
+                    totalWeight += Math.abs(weights.weight2) * reps;
+                } else {
+                    totalWeight += Math.abs(weights.weight) * reps;
+                }
+            }
+        }
+    });
+
     // Сохраняем в историю
     saveWorkoutToHistory();
 
-    // Показываем сообщение
-    alert(`Тренировка завершена!\n\nВремя: ${formatTime(mainTimerSeconds)}\nВыполнено подходов: ${completedCount}`);
+    // Показываем экран summary
+    showWorkoutSummary(mainTimerSeconds, completedCount, totalWeight);
+}
 
-    endWorkout(true);
+function showWorkoutSummary(timeSeconds, setsCompleted, totalWeight) {
+    // Форматируем данные
+    const timeFormatted = formatTime(timeSeconds);
+    const weightFormatted = totalWeight.toLocaleString('ru-RU');
+
+    // Обновляем экран
+    document.getElementById('summaryTime').textContent = timeFormatted;
+    document.getElementById('summarySets').textContent = setsCompleted;
+    document.getElementById('summaryWeight').textContent = weightFormatted;
+
+    // Переводим если нужно
+    if (currentLanguage === 'en') {
+        document.querySelector('.summary-title').textContent = 'Workout Complete!';
+        document.querySelectorAll('.summary-stat-label')[0].textContent = 'Time';
+        document.querySelectorAll('.summary-stat-label')[1].textContent = 'Sets';
+        document.querySelectorAll('.summary-stat-label')[2].textContent = 'kg lifted';
+        document.getElementById('summaryCloseBtn').textContent = 'Done';
+    } else {
+        document.querySelector('.summary-title').textContent = 'Тренировка завершена!';
+        document.querySelectorAll('.summary-stat-label')[0].textContent = 'Время';
+        document.querySelectorAll('.summary-stat-label')[1].textContent = 'Подходов';
+        document.querySelectorAll('.summary-stat-label')[2].textContent = 'кг поднято';
+        document.getElementById('summaryCloseBtn').textContent = 'Готово';
+    }
+
+    // Показываем экран
+    showScreen('summaryScreen');
+
+    // Обработчик кнопки закрытия
+    document.getElementById('summaryCloseBtn').onclick = () => {
+        endWorkout(true);
+    };
 }
 
 function endWorkout(completed) {

@@ -4,8 +4,8 @@
   "description": "Трекер тренировок в зале с 9 программами",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#4CAF50",
+  "background_color": "#000000",
+  "theme_color": "#ff6600",
   "orientation": "portrait",
   "icons": [
     {
