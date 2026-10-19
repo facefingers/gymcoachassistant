@@ -33,29 +33,83 @@
     --border: #e0e0e0;
 }
 
-/* Theme toggle button */
-.theme-toggle {
+/* Toggles container */
+.toggles-container {
     position: fixed;
     top: 20px;
     left: 20px;
     z-index: 1000;
-    background: var(--bg-card);
-    border: 2px solid var(--border);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toggle-group {
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.5rem;
-    transition: all 0.3s ease;
+    gap: 10px;
+    background: var(--bg-card);
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 2px solid var(--border);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.theme-toggle:hover {
-    transform: scale(1.1);
-    border-color: var(--primary);
+.toggle-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 40px;
+}
+
+/* Toggle switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border);
+    transition: 0.3s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: var(--primary);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.toggle-switch:hover .toggle-slider {
+    box-shadow: 0 0 8px var(--primary);
 }
 
 body {
@@ -254,59 +308,7 @@ header h1 {
     font-family: 'Courier New', monospace;
 }
 
-/* Cardio Section */
-.cardio-section {
-    background: linear-gradient(135deg, var(--secondary) 0%, #1976D2 100%);
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-.cardio-section h2 {
-    margin-bottom: 24px;
-    font-size: 1.8rem;
-}
-
-.cardio-timer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-}
-
-.timer-circle {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 8px solid rgba(255, 255, 255, 0.3);
-}
-
-#cardioTimer {
-    font-size: 3rem;
-    font-weight: bold;
-    font-family: 'Courier New', monospace;
-}
-
-.cardio-buttons {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.cardio-section.completed {
-    background: linear-gradient(135deg, var(--success) 0%, #2E7D32 100%);
-    opacity: 0.7;
-}
-
-.cardio-section.hidden {
-    display: none;
-}
+/* Cardio is now a regular exercise card */
 
 /* Exercise List */
 .exercises-list {
@@ -521,13 +523,9 @@ header h1 {
     white-space: nowrap;
 }
 
+/* Warmup set - same style as regular set, just with fire emoji */
 .warmup-set {
-    border: 2px solid var(--secondary) !important;
-    background: rgba(33, 150, 243, 0.05) !important;
-}
-
-.warmup-set .reps-counter {
-    border-color: var(--secondary);
+    /* No special styling - looks like regular set */
 }
 
 /* Exercise Controls */
@@ -838,14 +836,6 @@ header h1 {
         grid-template-columns: 1fr;
     }
 
-    .timer-circle {
-        width: 160px;
-        height: 160px;
-    }
-
-    #cardioTimer {
-        font-size: 2.5rem;
-    }
 
     .rest-content {
         padding: 32px 24px;
@@ -1010,4 +1000,104 @@ header h1 {
     max-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Superset group header */
+.superset-group-header {
+    background: linear-gradient(135deg, var(--warning) 0%, #f57c00 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 12px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Superset grouped exercises */
+.exercise-card.in-superset {
+    border-left: 4px solid var(--warning);
+    margin-left: 8px;
+}
+
+.exercise-card.superset-last {
+    margin-bottom: 32px;
+}
+
+/* Order Score Indicator */
+.order-score-indicator {
+    background: var(--bg-card);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease;
+}
+
+.score-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.score-label {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.score-value {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.score-stars {
+    font-size: 1.5rem;
+}
+
+.score-text {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--text);
+}
+
+.score-warning {
+    background: rgba(255, 152, 0, 0.15);
+    border-left: 3px solid var(--warning);
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: var(--warning);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.drag-hint {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Drag & Drop */
+.exercise-card {
+    cursor: grab;
+    transition: all 0.3s ease;
+}
+
+.exercise-card:active {
+    cursor: grabbing;
+}
+
+.exercise-card.drag-over {
+    border-color: var(--primary);
+    box-shadow: 0 0 16px rgba(76, 175, 80, 0.4);
+    transform: scale(1.02);
+}
+
+.exercise-card[draggable="true"]:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
