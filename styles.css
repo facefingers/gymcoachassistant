@@ -661,7 +661,8 @@ header h1 {
 .screen-header h2 {
     flex: 1;
     text-align: center;
-    color: var(--primary);
+    color: var(--text);
+    font-weight: 400;
 }
 
 .history-list {

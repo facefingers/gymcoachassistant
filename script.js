@@ -2201,7 +2201,7 @@ function showWorkoutSummary(timeSeconds, setsCompleted, totalWeight) {
     // Обновляем экран
     document.getElementById('summaryTime').textContent = timeFormatted;
     document.getElementById('summarySets').textContent = setsCompleted;
-    document.getElementById('summaryWeight').textContent = weightFormatted;
+    document.getElementById('summaryWeight').textContent = weightFormatted + (currentLanguage === 'en' ? ' kg' : ' кг');
     document.getElementById('summaryWorkoutName').textContent = workoutName;
 
     // Переводим если нужно
@@ -2209,13 +2209,13 @@ function showWorkoutSummary(timeSeconds, setsCompleted, totalWeight) {
         document.querySelector('.summary-title').textContent = 'Workout Complete';
         document.querySelectorAll('.summary-stat-label')[0].textContent = 'Time';
         document.querySelectorAll('.summary-stat-label')[1].textContent = 'Sets';
-        document.querySelectorAll('.summary-stat-label')[2].textContent = 'kg lifted';
+        document.querySelectorAll('.summary-stat-label')[2].textContent = 'lifted';
         document.getElementById('summaryCloseBtn').textContent = 'Done';
     } else {
         document.querySelector('.summary-title').textContent = 'Тренировка завершена';
         document.querySelectorAll('.summary-stat-label')[0].textContent = 'Время';
         document.querySelectorAll('.summary-stat-label')[1].textContent = 'Подходов';
-        document.querySelectorAll('.summary-stat-label')[2].textContent = 'кг поднято';
+        document.querySelectorAll('.summary-stat-label')[2].textContent = 'поднято';
         document.getElementById('summaryCloseBtn').textContent = 'Готово';
     }
 
@@ -2886,13 +2886,13 @@ function updateLanguage() {
 
     // Обновить кнопки навигации
     const historyBtn = document.getElementById('historyBtn');
-    if (historyBtn) historyBtn.textContent = currentLanguage === 'ru' ? '📊 История' : '📊 History';
+    if (historyBtn) historyBtn.textContent = currentLanguage === 'ru' ? 'История' : 'History';
 
     const adviceBtn = document.getElementById('adviceBtn');
-    if (adviceBtn) adviceBtn.textContent = currentLanguage === 'ru' ? '💡 Советы' : '💡 Advice';
+    if (adviceBtn) adviceBtn.textContent = currentLanguage === 'ru' ? 'Советы' : 'Advice';
 
     const statsBtn = document.getElementById('statsBtn');
-    if (statsBtn) statsBtn.textContent = currentLanguage === 'ru' ? '📈 Статистика' : '📈 Statistics';
+    if (statsBtn) statsBtn.textContent = currentLanguage === 'ru' ? 'Статистика' : 'Statistics';
 
     // Обновить экран тренировки если он открыт
     if (currentWorkout && document.getElementById('workoutScreen').classList.contains('active')) {

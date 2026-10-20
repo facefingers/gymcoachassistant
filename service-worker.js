@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workout-tracker-v1';
+const CACHE_NAME = 'workout-tracker-v2';
 const urlsToCache = [
   './',
   './index.html',
@@ -21,10 +21,21 @@ self.addEventListener('install', event => {
 // Обслуживание запросов из кэша
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // Возвращаем из кэша или загружаем с сервера
-        return response || fetch(event.request);
+        // Клонируем ответ
+        const responseToCache = response.clone();
+
+        // Обновляем кеш
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseToCache);
+        });
+
+        return response;
+      })
+      .catch(() => {
+        // Если сеть недоступна, возвращаем из кеша
+        return caches.match(event.request);
       })
   );
 });
