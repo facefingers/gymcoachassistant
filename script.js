@@ -2194,20 +2194,25 @@ function showWorkoutSummary(timeSeconds, setsCompleted, totalWeight) {
     const timeFormatted = formatTime(timeSeconds);
     const weightFormatted = totalWeight.toLocaleString('ru-RU');
 
+    // Получаем название тренировки
+    const workout = workouts[currentWorkout];
+    const workoutName = currentLanguage === 'ru' ? workout.name : (workout.nameEn || workout.name);
+
     // Обновляем экран
     document.getElementById('summaryTime').textContent = timeFormatted;
     document.getElementById('summarySets').textContent = setsCompleted;
     document.getElementById('summaryWeight').textContent = weightFormatted;
+    document.getElementById('summaryWorkoutName').textContent = workoutName;
 
     // Переводим если нужно
     if (currentLanguage === 'en') {
-        document.querySelector('.summary-title').textContent = 'Workout Complete!';
+        document.querySelector('.summary-title').textContent = 'Workout Complete';
         document.querySelectorAll('.summary-stat-label')[0].textContent = 'Time';
         document.querySelectorAll('.summary-stat-label')[1].textContent = 'Sets';
         document.querySelectorAll('.summary-stat-label')[2].textContent = 'kg lifted';
         document.getElementById('summaryCloseBtn').textContent = 'Done';
     } else {
-        document.querySelector('.summary-title').textContent = 'Тренировка завершена!';
+        document.querySelector('.summary-title').textContent = 'Тренировка завершена';
         document.querySelectorAll('.summary-stat-label')[0].textContent = 'Время';
         document.querySelectorAll('.summary-stat-label')[1].textContent = 'Подходов';
         document.querySelectorAll('.summary-stat-label')[2].textContent = 'кг поднято';

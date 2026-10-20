@@ -441,26 +441,33 @@
         <!-- Workout Summary Screen -->
         <div id="summaryScreen" class="screen">
             <div class="summary-container">
-                <h2 class="summary-title">Тренировка завершена!</h2>
+                <div class="summary-icon">✓</div>
+                <h2 class="summary-title">Тренировка завершена</h2>
+                <p class="summary-subtitle" id="summaryWorkoutName">Спина и Грудь</p>
 
                 <div class="summary-stats">
                     <div class="summary-stat-card">
+                        <div class="summary-stat-icon">⏱️</div>
                         <div class="summary-stat-value" id="summaryTime">45:23</div>
                         <div class="summary-stat-label">Время</div>
                     </div>
 
                     <div class="summary-stat-card">
+                        <div class="summary-stat-icon">💪</div>
                         <div class="summary-stat-value" id="summarySets">24</div>
                         <div class="summary-stat-label">Подходов</div>
                     </div>
 
                     <div class="summary-stat-card highlight">
+                        <div class="summary-stat-icon">🏋️</div>
                         <div class="summary-stat-value" id="summaryWeight">2,450</div>
                         <div class="summary-stat-label">кг поднято</div>
                     </div>
                 </div>
 
-                <button class="btn btn-primary summary-close" id="summaryCloseBtn">Готово</button>
+                <div class="summary-actions">
+                    <button class="btn btn-primary summary-close" id="summaryCloseBtn">Готово</button>
+                </div>
             </div>
         </div>
     </div>
