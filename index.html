@@ -41,7 +41,7 @@
 
     <div class="container">
         <header>
-            <h1>Тренировочный Трекер</h1>
+            <h1 id="mainTitle" class="main-title-clickable">Тренировочный Трекер</h1>
             <div class="header-buttons">
                 <button id="historyBtn" class="btn btn-secondary">История</button>
                 <button id="adviceBtn" class="btn btn-secondary">Советы</button>
@@ -430,36 +430,38 @@
             <div id="statsContent" class="stats-content"></div>
         </div>
 
-        <!-- Workout Summary Screen -->
-        <div id="summaryScreen" class="screen">
-            <div class="summary-container">
-                <div class="summary-icon">✓</div>
-                <h2 class="summary-title">Тренировка завершена</h2>
-                <p class="summary-subtitle" id="summaryWorkoutName">Спина и Грудь</p>
+    </div>
 
-                <div class="summary-stats">
-                    <div class="summary-stat-card">
-                        <div class="summary-stat-icon">⏱️</div>
-                        <div class="summary-stat-value" id="summaryTime">45:23</div>
-                        <div class="summary-stat-label">Время</div>
-                    </div>
+    <!-- Workout Summary Screen -->
+    <div id="summaryScreen" class="screen">
+        <div class="summary-container-new">
+            <div class="summary-header-new">
+                <div class="summary-header-title">МОЯ ТРЕНИРОВКА</div>
+                <div class="summary-header-subtitle" id="summaryWorkoutName">Спина и Грудь</div>
+            </div>
 
-                    <div class="summary-stat-card">
-                        <div class="summary-stat-icon">💪</div>
-                        <div class="summary-stat-value" id="summarySets">24</div>
-                        <div class="summary-stat-label">Подходов</div>
-                    </div>
-
-                    <div class="summary-stat-card highlight">
-                        <div class="summary-stat-icon">🏋️</div>
-                        <div class="summary-stat-value" id="summaryWeight">2,450 кг</div>
-                        <div class="summary-stat-label">поднято</div>
-                    </div>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-card-icon">⏱️</div>
+                    <div class="summary-card-value" id="summaryTime">45:23</div>
+                    <div class="summary-card-label">время</div>
                 </div>
 
-                <div class="summary-actions">
-                    <button class="btn btn-primary summary-close" id="summaryCloseBtn">Готово</button>
+                <div class="summary-card">
+                    <div class="summary-card-icon">💪</div>
+                    <div class="summary-card-value" id="summarySets">24</div>
+                    <div class="summary-card-label">подходов</div>
                 </div>
+
+                <div class="summary-card summary-card-highlight">
+                    <div class="summary-card-icon">🏋️</div>
+                    <div class="summary-card-value" id="summaryWeight">2,450 кг</div>
+                    <div class="summary-card-label">поднято</div>
+                </div>
+            </div>
+
+            <div class="summary-footer">
+                <button class="btn btn-primary summary-close-new" id="summaryCloseBtn">Готово</button>
             </div>
         </div>
     </div>

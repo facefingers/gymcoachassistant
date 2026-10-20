@@ -279,8 +279,10 @@ const workouts = {
     1: {
         name: "Тренировка 1: Спина и Грудь",
         nameEn: "Workout 1: Back and Chest",
-        subtitle: "Акцент на верх тела",
-        subtitleEn: "Upper body focus",
+        title: "Спина и Грудь",
+        titleEn: "Back and Chest",
+        description: "Акцент на верх тела",
+        descriptionEn: "Upper body focus",
         duration: "60-90 мин",
         durationEn: "60-90 min",
         hasWarmup: true,
@@ -1377,6 +1379,11 @@ function initializeApp() {
         finishWorkout();
     });
 
+    // Клик на заголовок - возврат на главную
+    document.getElementById('mainTitle').addEventListener('click', () => {
+        showScreen('mainScreen');
+    });
+
     document.getElementById('historyBtn').addEventListener('click', () => {
         showScreen('historyScreen');
         loadHistory();
@@ -2183,48 +2190,59 @@ function finishWorkout() {
     });
 
     // Сохраняем в историю
-    saveWorkoutToHistory();
+    saveWorkoutToHistory(mainTimerSeconds, completedCount, totalWeight);
 
-    // Показываем экран summary
-    showWorkoutSummary(mainTimerSeconds, completedCount, totalWeight);
+    // Возвращаемся на главную
+    showScreen('mainScreen');
+
+    // Показываем уведомление
+    alert(currentLanguage === 'ru' ? '✅ Тренировка завершена!' : '✅ Workout completed!');
 }
 
-function showWorkoutSummary(timeSeconds, setsCompleted, totalWeight) {
-    // Форматируем данные
-    const timeFormatted = formatTime(timeSeconds);
-    const weightFormatted = totalWeight.toLocaleString('ru-RU');
+// Показать summary для записи из истории
+function showHistoryItemSummary(historyItem) {
+    const timeFormatted = formatTime(historyItem.duration);
+    const weightFormatted = (historyItem.totalWeight || 0).toLocaleString('ru-RU');
+    const workoutName = currentLanguage === 'ru'
+        ? historyItem.workoutName
+        : (historyItem.workoutNameEn || historyItem.workoutName);
 
-    // Получаем название тренировки
-    const workout = workouts[currentWorkout];
-    const workoutName = currentLanguage === 'ru' ? workout.name : (workout.nameEn || workout.name);
+    // Извлекаем название без префикса "Тренировка X:"
+    const workoutTitle = workoutName.includes(':')
+        ? workoutName.split(':')[1].trim()
+        : workoutName;
 
     // Обновляем экран
     document.getElementById('summaryTime').textContent = timeFormatted;
-    document.getElementById('summarySets').textContent = setsCompleted;
+    document.getElementById('summarySets').textContent = historyItem.completedSets;
     document.getElementById('summaryWeight').textContent = weightFormatted + (currentLanguage === 'en' ? ' kg' : ' кг');
-    document.getElementById('summaryWorkoutName').textContent = workoutName;
+    document.getElementById('summaryWorkoutName').textContent = workoutTitle;
 
     // Переводим если нужно
     if (currentLanguage === 'en') {
-        document.querySelector('.summary-title').textContent = 'Workout Complete';
-        document.querySelectorAll('.summary-stat-label')[0].textContent = 'Time';
-        document.querySelectorAll('.summary-stat-label')[1].textContent = 'Sets';
-        document.querySelectorAll('.summary-stat-label')[2].textContent = 'lifted';
+        const headerTitle = document.querySelector('.summary-header-title');
+        if (headerTitle) headerTitle.textContent = 'MY WORKOUT';
+
+        document.querySelectorAll('.summary-card-label')[0].textContent = 'time';
+        document.querySelectorAll('.summary-card-label')[1].textContent = 'sets';
+        document.querySelectorAll('.summary-card-label')[2].textContent = 'lifted';
         document.getElementById('summaryCloseBtn').textContent = 'Done';
     } else {
-        document.querySelector('.summary-title').textContent = 'Тренировка завершена';
-        document.querySelectorAll('.summary-stat-label')[0].textContent = 'Время';
-        document.querySelectorAll('.summary-stat-label')[1].textContent = 'Подходов';
-        document.querySelectorAll('.summary-stat-label')[2].textContent = 'поднято';
+        const headerTitle = document.querySelector('.summary-header-title');
+        if (headerTitle) headerTitle.textContent = 'МОЯ ТРЕНИРОВКА';
+
+        document.querySelectorAll('.summary-card-label')[0].textContent = 'время';
+        document.querySelectorAll('.summary-card-label')[1].textContent = 'подходов';
+        document.querySelectorAll('.summary-card-label')[2].textContent = 'поднято';
         document.getElementById('summaryCloseBtn').textContent = 'Готово';
     }
 
     // Показываем экран
     showScreen('summaryScreen');
 
-    // Обработчик кнопки закрытия
+    // Обработчик кнопки закрытия - возвращаемся в историю
     document.getElementById('summaryCloseBtn').onclick = () => {
-        endWorkout(true);
+        showScreen('historyScreen');
     };
 }
 
@@ -2241,18 +2259,19 @@ function endWorkout(completed) {
 }
 
 // Сохранение истории
-function saveWorkoutToHistory() {
+function saveWorkoutToHistory(timeSeconds, setsCompleted, totalWeight) {
     const workout = workouts[currentWorkout];
-    const completedCount = Object.values(completedSets).filter(v => v).length;
 
     const workoutData = {
         id: Date.now(),
         date: new Date().toISOString(),
         workoutId: currentWorkout,
         workoutName: workout.name,
-        duration: mainTimerSeconds,
-        completedSets: completedCount,
-        totalSets: Object.keys(completedSets).length
+        workoutNameEn: workout.nameEn,
+        duration: timeSeconds,
+        completedSets: setsCompleted,
+        totalSets: Object.keys(completedSets).length,
+        totalWeight: Math.round(totalWeight)
     };
 
     const history = getWorkoutHistory();
@@ -2296,6 +2315,8 @@ function loadHistory() {
             minute: '2-digit'
         });
 
+        const weightInfo = workout.totalWeight ? `<span>🏋️ ${workout.totalWeight.toLocaleString('ru-RU')} кг</span>` : '';
+
         item.innerHTML = `
             <div class="history-header">
                 <h3>${workout.workoutName}</h3>
@@ -2304,9 +2325,18 @@ function loadHistory() {
             <div class="history-stats">
                 <span>⏱️ ${formatTime(workout.duration)}</span>
                 <span>✅ ${workout.completedSets}/${workout.totalSets} подходов</span>
-                <span>📊 ${Math.round((workout.completedSets / workout.totalSets) * 100)}%</span>
+                ${weightInfo}
             </div>
+            <button class="btn btn-secondary share-workout-btn" data-workout-id="${workout.id}">
+                📤 Поделиться
+            </button>
         `;
+
+        // Добавляем обработчик на кнопку поделиться
+        const shareBtn = item.querySelector('.share-workout-btn');
+        shareBtn.addEventListener('click', () => {
+            showHistoryItemSummary(workout);
+        });
 
         container.appendChild(item);
     });
@@ -2845,11 +2875,34 @@ function updateLanguage() {
                 h2.textContent = emoji ? `${workoutNumber} ${emoji.join('')}` : workoutNumber;
             }
 
-            // Описание и длительность
-            const subtitle = currentLanguage === 'ru' ? workout.subtitle : (workout.subtitleEn || workout.subtitle);
+            // Название, описание и длительность
+            // Извлекаем название из name (после двоеточия)
+            const nameWithPrefix = currentLanguage === 'ru' ? workout.name : (workout.nameEn || workout.name);
+            const titleFromName = nameWithPrefix.includes(':') ? nameWithPrefix.split(':')[1].trim() : nameWithPrefix;
+
+            const title = currentLanguage === 'ru'
+                ? (workout.title || titleFromName)
+                : (workout.titleEn || titleFromName);
+
+            const description = currentLanguage === 'ru'
+                ? (workout.description || workout.subtitle || '')
+                : (workout.descriptionEn || workout.subtitleEn || workout.description || workout.subtitle || '');
+
             const duration = currentLanguage === 'ru' ? workout.duration : (workout.durationEn || workout.duration);
 
-            card.querySelector('h3').textContent = subtitle;
+            const h3Tag = card.querySelector('h3');
+            if (h3Tag) h3Tag.textContent = title;
+
+            const pTag = card.querySelector('p');
+            if (pTag) {
+                if (description) {
+                    pTag.textContent = description;
+                    pTag.style.display = '';
+                } else {
+                    pTag.style.display = 'none';
+                }
+            }
+
             card.querySelector('.workout-badge').textContent = `~${duration}`;
 
             // Обновить информацию о тренировке (упражнения и подходы)
