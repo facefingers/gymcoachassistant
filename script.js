@@ -2828,7 +2828,7 @@ function updateLanguage() {
     // Обновить все текстовые элементы интерфейса
     const mainTitle = document.querySelector('header h1');
     if (mainTitle) {
-        mainTitle.textContent = currentLanguage === 'ru' ? '💪 Тренировочный Трекер' : '💪 Workout Tracker';
+        mainTitle.textContent = currentLanguage === 'ru' ? 'Тренировочный Трекер' : 'Workout Tracker';
     }
 
     // Обновить карточки тренировок

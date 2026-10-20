@@ -224,6 +224,10 @@ header h1 {
     display: block;
 }
 
+#summaryScreen.active {
+    display: flex;
+}
+
 /* Workout Cards */
 .workout-cards {
     display: grid;
